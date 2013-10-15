@@ -1,0 +1,32 @@
+<div class="hero-unit">
+	<p id="notice"><%= notice %></p>
+
+	<% if !current_user.accounts.blank? %>
+		<table class="table table-striped" data-provides="rowlink">
+			<caption>Accounts</caption>
+			<thead>
+		    <tr>
+		      <th>#</th>
+		      <th>Account Type</th>
+					<th>Balance</th>
+		    </tr>
+		  </thead>
+			<tbody>
+				<% for account in current_user.accounts do %>
+		    <tr>
+					<td>ID: <%= account.id %><%= link_to "", account_path(account.id) %></td>
+					<td>Account type: <%= account.account_type == 1 ? "Checking" : "Saving" %></td>
+					<td>Balance: $<%= account.balance %></td>
+				</tr>
+				<% end %>
+		  </tbody>
+		</table>
+	<% else %>
+		<p>No accounts</p>
+		<p><%= link_to "Click here", new_account_path %> to open a new account.</p>
+	<% end %>
+
+</div>
+
+
+

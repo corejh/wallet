@@ -27,7 +27,7 @@ class Transaction < ActiveRecord::Base
   private
   
   def insufficient_funds
-    if transaction_type == 1 or (transaction_type == 3 and source_account.id == current_user.id)
+    if transaction_type == 1 or (transaction_type == 3 and source_account.id == self.user.id)
       errors.add(:balance, " - Insufficient funds") if amount > source_account.balance
     end
   end

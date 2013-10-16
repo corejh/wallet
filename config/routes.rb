@@ -6,6 +6,12 @@ Wallet::Application.routes.draw do
   end
   get "/profile", to: "users#show", as: :profile
 
+  get "/withdraw", to: "transactions#withdraw", as: :withdraw
+  get "/deposit", to: "transactions#deposit", as: :deposit
+  get "/transfer", to: "transactions#transfer", as: :transfer
+
+
+
   resources :accounts, only: [:new, :create, :show]
   resources :transactions, only: [:new, :create]
 

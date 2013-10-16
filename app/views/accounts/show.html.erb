@@ -19,18 +19,28 @@
 		<% for transaction in @account.transactions do %>
     <tr>
 			<% tt = transaction.transaction_type %>
-			<td><%= transaction.created_at.strftime("%b/%d/%Y") %></td>
-			<td><%= transaction.transaction_type %></td>
+			<td><abbr title="<%= transaction.created_at.to_s(:db) %> UTC"><%= transaction.created_at.strftime("%b/%d/%Y") %></abbr></td>
+			<% if transaction.transaction_type == 1 %>
+				<td>Withdrawl</td>
+			<% elsif transaction.transaction_type == 2 %>
+				<td>Deposit</td>
+			<% else %>
+				<td>Transfer</td>
+			<% end %>
 			<td>
-				<% if tt == 1 or (tt == 3 and source_account_id == @account.id) %>
-					<%= transaction.balance %>
+				<% if tt == 1 or (tt == 3 and transaction.source_account_id == @account.id) %>
+					$<%= transaction.amount %>
 				<% end %></td>
 			<td>
-				<% if tt == 2 or (tt == 3 and destination_account_id == @account.id) %>
-					<%= transaction.balance %>
+				<% if tt == 2 or (tt == 3 and transaction.destination_account_id == @account.id) %>
+					$<%= transaction.amount %>
 				<% end %>
 			</td>
-			<td>$<%= transaction.balance %></td>
+			<% if tt == 1 or (tt == 3 and transaction.source_account_id == @account.id) %>
+				<td>$<%= transaction.source_balance %></td>
+			<% else %>
+				<td>$<%= transaction.destination_balance %></td>
+			<% end %>
 		</tr>
 		<% end %>
   </tbody>

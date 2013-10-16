@@ -13,6 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require twitter/bootstrap
-//= require bootstrap-rowlink.min
 //= require turbolinks
+//= require bootstrap-rowlink.min
+//= require bootstrap-tooltip
+//= require bootstrap-popover
 //= require_tree .

@@ -1,6 +1,6 @@
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
-
+  before_action :new_transaction, only: [:new, :deposit, :withdraw, :transfer]
   # GET /transactions
   # GET /transactions.json
   def index
@@ -27,12 +27,38 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.new(transaction_params)
 
     respond_to do |format|
-      if @transaction.save
-        format.html { redirect_to @transaction, notice: 'Transaction was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @transaction }
+      
+      response = ""
+      if @transaction.transaction_type == 1
+        response = 1
+      elsif @transaction.transaction_type == 2
+        response = 2
+      elsif @transaction.transaction_type == 3 and @transaction.source_account_id == current_user.id
+        response = 3
       else
-        format.html { render action: 'new' }
+        response = 4
+      end
+      
+      if @transaction.save
+        format.json { render action: 'show', status: :created, location: @transaction }
+        if response == 1
+          format.html { redirect_to account_path(@transaction.source_account_id), notice: 'Withdrawl completed.' }
+        elsif response == 2
+          format.html { redirect_to account_path(@transaction.destination_account_id), notice: 'Deposit completed.' }
+        elsif response == 3
+          format.html { redirect_to account_path(@transaction.source_account_id), notice: 'Transfer complete.' }
+        else
+          format.html { redirect_to account_path(@transaction.destination_account_id), notice: 'Transfer completed.' }
+        end
+      else
         format.json { render json: @transaction.errors, status: :unprocessable_entity }
+        if response == 1
+          format.html { render action: 'withdraw' }
+        elsif response == 2
+          format.html { render action: 'deposit' }
+        else
+          format.html { render action: 'transfer' }
+        end
       end
     end
   end
@@ -61,14 +87,27 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def withdraw
+  end
+  
+  def deposit    
+  end
+  
+  def transfer
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_transaction
       @transaction = Transaction.find(params[:id])
     end
+    
+    def new_transaction
+      @transaction = Transaction.new
+    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def transaction_params
-      params[:transaction]
+      params[:transaction].permit(:user_id, :source_account_id, :destination_account_id, :transaction_type, :destination_balance, :source_balance, :amount)
     end
 end

@@ -1,0 +1,31 @@
+<%= form_for(@transaction) do |f| %>
+  <% if @transaction.errors.any? %>
+    <div id="error_explanation" class="alert alert-error">
+      <h2><%= pluralize(@transaction.errors.count, "error") %> occured:</h2>
+
+      <ul>
+      <% @transaction.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <div class="center hero-unit">
+		<%= f.label "Withdraw from which account?" %> 
+		<%= f.select(:source_account_id, current_user.accounts.all.collect {|a| [a.account_type == 1 ? "#{a.id} Checking : $#{a.balance}" : "#{a.id} Savings : $#{a.balance}", a.id]}) -%>
+	
+		<%= f.label "Amount?" %> 
+		<div class="input-prepend">
+			<span class="add-on">$</span>
+			<%= f.number_field(:amount, min: 0, step: 0.01) %> 
+		</div>
+	</div>
+
+  <div class="actions">
+		<%= f.hidden_field :user_id, value: current_user.id %>
+		<%= f.hidden_field :transaction_type, value: 1 %>
+    <%= f.submit "Make Withdrawl" %>
+  </div>
+<% end %>

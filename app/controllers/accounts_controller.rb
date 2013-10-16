@@ -56,7 +56,7 @@ class AccountsController < ApplicationController
   def destroy
     @account.destroy
     respond_to do |format|
-      format.html { redirect_to accounts_url }
+      format.html { redirect_to profile_path }
       format.json { head :no_content }
     end
   end
